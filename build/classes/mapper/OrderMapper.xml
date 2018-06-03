@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.OrderMapper">
+
+	 <insert id="addOrder" parameterType="mo.OrderMo">
+		<selectKey keyProperty="order_id" order="AFTER" resultType="int">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO ordert(cust_id,order_state,order_time)
+		VALUES
+		(#{cust_id},#{order_state},#{order_time})
+	</insert>
+
+	<insert id="addOrderDetails" parameterType="mo.OrderdetailsMo">
+		INSERT INTO
+		orderdetailst(order_id,comm_id,comm_number,comm_price,is_comment)
+		values(#{order_id},#{comm_id},#{comm_number},#{comm_price},#{is_comment})
+	</insert>
+
+	<select id="getOrderList" parameterType="int" resultType="mo.JieSuan_ViewMo">
+		select
+		cust_id,comm_id,order_id,image1,comm_name_plus,comm_price,comm_number,sum_price
+		from JieSuan_View
+		where order_id=#{order_id}
+	</select>
+
+
+	<select id="getUserAddList" parameterType="int" resultType="mo.Receive_InfoMo">
+		select rece_name,rece_tel,rece_add,shengfen,shi,xianqu,moren,rece_id
+		from receive_infoT
+		where cust_id=#{cust_id}
+		order by moren desc
+	</select>
+
+	<select id="getProvinces" resultType="mo.ProvincesMo">
+		select
+		provinceid,id,province
+		from provinces
+	</select>
+
+	<select id="getCities" parameterType="String" resultType="mo.CitiesMo">
+		SELECT
+		cityid,provinceid,city,id
+		from cities
+		where provinceid=#{provinceid}
+	</select>
+
+	<select id="getAreas" parameterType="String" resultType="mo.AreasMo">
+		select
+		areaid,cityid,id,area
+		from areas
+		WHERE cityid=#{cityid}
+	</select>
+
+	<select id="getProvincesById" parameterType="String" resultType="mo.ProvincesMo">
+		select provinceid,id,province
+		from provinces
+		where
+		provinceid=#{provinceid}
+	</select>
+
+	<select id="getCityById" parameterType="String" resultType="mo.CitiesMo">
+		SELECT cityid,provinceid,city,id
+		from cities
+		where cityid=#{cityid}
+	</select>
+
+	<insert id="addReceive" parameterType="mo.Receive_InfoMo">
+		insert into
+		receive_infot(cust_id,rece_name,rece_tel,shengfen,shi,xianqu,rece_add,moren)
+		values(#{cust_id},#{rece_name},#{rece_tel},#{shengfen},#{shi},#{xianqu},#{rece_add},0)
+	</insert>
+
+	<update id="updateSetMoren0" parameterType="int">
+		update receive_infot
+		set moren=0
+		where cust_id=#{cust_id}
+	</update>
+
+
+	<update id="updateSetMoren1" parameterType="int">
+		update receive_infot
+		set moren=1
+		where rece_id=#{rece_id}
+	</update>
+
+	<delete id="deleteReceive" parameterType="int">
+		delete from
+		receive_infot
+		where rece_id=#{rece_id}
+	</delete>
+
+	<update id="updateOrderReceive" parameterType="mo.OrderMo">
+		update ordert
+		set
+		rece_name=#{rece_name}, rece_tel=#{rece_tel}, rece_add=#{rece_add}
+		where order_id=#{order_id}
+	</update>
+
+
+	<update id="updateOrderPayMethod" parameterType="mo.OrderMo">
+		update ordert
+		set pay_method=#{pay_method}
+		where order_id=#{order_id}
+	</update>
+
+	<update id="updateOrder" parameterType="mo.OrderMo">
+		update ordert
+		set
+		order_state=#{order_state},pay_no=#{pay_no},is_send=#{is_send},is_receive=#{is_receive},paymoney_time=#{paymoney_time}
+		where order_id=#{order_id}
+	</update>
+
+	<select id="getOrderDetails" parameterType="int" resultType="mo.OrderdetailsMo">
+		select comm_id,comm_number
+		from OrderDetailst
+		where order_id=#{order_id}
+	</select>
+
+	<delete id="deleteShopCar" parameterType="mo.ShoppingCarMo">
+		delete from
+		shoppingcart
+		where cust_id=#{cust_id} and comm_id=#{comm_id}
+	</delete>
+
+	<select id="getCommodity" parameterType="int" resultType="mo.CommodityMo">
+		select
+		comm_id,comm_number,sales_number
+		from commodityt
+		where
+		comm_id=#{comm_id}
+	</select>
+
+	<update id="updateCommodity" parameterType="mo.CommodityMo">
+		update commodityt
+		set
+		comm_number=#{comm_number},sales_number=#{sales_number}
+		where
+		comm_id=#{comm_id}
+	</update>
+
+	<select id="getShouHuo" parameterType="int" resultType="mo.ShouHuoInfo_ViewMo">
+		select
+		order_id,cust_id,rece_name,rece_tel,rece_add,totalprice
+		from
+		ShouHuoInfo_View
+		where order_id=#{order_id}
+	</select>
+
+	<select id="getOrder" parameterType="int" resultType="mo.OrderMo">
+		select
+		order_id,cust_id,order_state,paymoney_time,is_send,is_receive
+		from
+		ordert
+		where cust_id=#{cust_id}
+	</select>
+
+	<update id="updateOrderSend" parameterType="mo.OrderMo">
+		update ordert
+		set
+		is_send=1
+		where order_id=#{order_id}
+	</update>
+
+	<update id="updateOrderSendReceive" parameterType="mo.OrderMo">
+		update ordert
+		set is_send=1,is_receive=1
+		where order_id=#{order_id}
+	</update>
+
+	<select id="getAllOrderInfo" parameterType="int" resultType="mo.Order_ViewMo">
+		select
+		order_id,cust_id,order_state,order_time,is_send,paymoney_time,is_receive,totalprice,is_comment
+		from Order_View
+		where cust_id=#{cust_id}
+		order by order_id desc
+	</select>
+
+
+	<select id="getNoPayOrderInfo" parameterType="int" resultType="mo.Order_ViewMo">
+		select
+		order_id,cust_id,order_state,order_time,is_send,paymoney_time,is_receive,totalprice,is_comment
+		from Order_View
+		where cust_id=#{cust_id} and order_state='未支付'
+		order by
+		order_id desc
+	</select>
+
+
+	<select id="getNoSendOrderInfo" parameterType="int" resultType="mo.Order_ViewMo">
+		select
+		order_id,cust_id,order_state,order_time,is_send,paymoney_time,is_receive,totalprice,is_comment
+		from Order_View
+		where cust_id=#{cust_id} and order_state='已支付' and is_send=0
+		order by
+		order_id desc
+	</select>
+
+	<select id="getNoReceiveOrderInfo" parameterType="int" resultType="mo.Order_ViewMo">
+		select
+		order_id,cust_id,order_state,order_time,is_send,paymoney_time,is_receive,totalprice,is_comment
+		from Order_View
+		where cust_id=#{cust_id} and order_state='已支付' and is_send=1 and is_receive=0
+		order by
+		order_id desc
+	</select>
+	
+	<select id="getNoCommentOrderInfo" parameterType="int" resultType="mo.Order_ViewMo">
+		select
+		order_id,cust_id,order_state,order_time,is_send,paymoney_time,is_receive,totalprice,is_comment
+		from Order_View
+		where cust_id=#{cust_id} and order_state='已支付' and  is_receive=1 and is_comment=0
+		order by
+		order_id desc
+	</select>
+	
+	<select id="getOrderCommodity" parameterType="int" resultType="mo.Order_Commodity_ViewMo">
+	   select order_id,comm_id,comm_price,comm_number,image1,comm_name_plus
+	   from Order_Commodity_View
+	   where order_id=#{order_id}
+	</select>
+	
+	
+    <select id="getOrderInfo" parameterType="int" resultType="mo.Order_Details_ViewMo">
+	   select order_id,cust_id,order_state,order_time,is_send,paymoney_time,is_receive,totalprice,is_comment,rece_name,rece_tel,rece_add
+	   from Order_Details_View
+	   where order_id=#{order_id}
+	</select> 
+
+</mapper>

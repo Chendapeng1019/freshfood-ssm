@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.CommodityMapper">
+
+	<select id="getActivityCommodity" resultType="mo.Activity_ViewMo">
+		select
+		comm_id,commodity_name,activityfood_price,comm_price,image1,activity_time
+		from Activity_View
+		order by activity_time desc limit 4
+
+	</select>
+
+	<select id="getIndexCommodity" parameterType="String"
+		resultType="mo.Commodity_ViewMo">
+		select comm_id,commodity_name,comm_price,image1
+		from
+		commodity_view
+		where bigtype_name=#{commodityType}
+		order by putaway_time
+		desc limit 7
+	</select>
+
+	<select id="getSearchNumber" parameterType="String" resultType="int">
+		select count(*) from commodity_view
+		where CONCAT( commodity_name ,
+		comm_name_plus, smalltype_name ,bigtype_name
+		) like '%${value}%'
+	</select>
+
+	
+
+	<select id="getSearchCommodity" parameterType="mo.SearchMo"
+		resultType="mo.Commodity_ViewMo">
+		select
+		comm_id,comm_name_plus,comm_price,comment_number,sales_number,trademark,image1
+		from commodity_view
+		where CONCAT( commodity_name ,comm_name_plus,
+		smalltype_name ,bigtype_name ) like '%${search}%'
+		LIMIT #{page} ,
+		#{pageSize}
+	</select>
+
+	<select id="getSearchCommodityBySaleNumber" parameterType="mo.SearchMo"
+		resultType="mo.Commodity_ViewMo">
+		select
+		comm_id,comm_name_plus,comm_price,comment_number,sales_number,trademark,image1
+		from commodity_view
+		where CONCAT( commodity_name ,comm_name_plus,
+		smalltype_name ,bigtype_name ) like '%${search}%'
+		order by sales_number desc
+		LIMIT #{page} , #{pageSize}
+	</select>
+
+	<select id="getSearchCommodityByPrice" parameterType="mo.SearchMo"
+		resultType="mo.Commodity_ViewMo">
+		select
+		comm_id,comm_name_plus,comm_price,comment_number,sales_number,trademark,image1
+		from commodity_view
+		where CONCAT( commodity_name ,comm_name_plus,
+		smalltype_name ,bigtype_name ) like '%${search}%'
+        order by comm_price
+		LIMIT #{page} , #{pageSize}
+	</select>
+
+	<select id="getSearchCommodityByCommentNumber" parameterType="mo.SearchMo"
+		resultType="mo.Commodity_ViewMo">
+		select
+		comm_id,comm_name_plus,comm_price,comment_number,sales_number,trademark,image1
+		from commodity_view
+		where CONCAT( commodity_name ,comm_name_plus,
+		smalltype_name ,bigtype_name ) like '%${search}%'
+        order by comment_number desc
+		LIMIT #{page} , #{pageSize}
+	</select>
+	
+	
+	<select id="getCommodityInfo" parameterType="int" resultType="mo.CommodityMo">
+	   select comm_id,image1,image2,comm_name_plus,comm_price,sales_number,comment_number,comm_number,trademark
+	   from CommodityInfo_View
+	   where comm_id=#{comm_id}	
+	</select>
+	
+	<select id="getCommodityNames" parameterType="int" resultType="mo.CommodityNamesMo">
+	  select comm_id,bigtype_name,smalltype_name,commodity_name
+	  from CommodityNames
+	  where comm_id=#{comm_id}
+	</select>
+	
+	<select id="getImages" parameterType="int" resultType="mo.Images_ViewMo">
+	   select image_id,comm_id,images
+	   from Images_View
+	   where comm_id=#{comm_id}
+       order by image_id	
+	</select>
+	
+
+
+</mapper>

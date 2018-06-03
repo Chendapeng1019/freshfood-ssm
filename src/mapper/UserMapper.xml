@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.UserMapper">
+
+	<select id="findUserByPhone" parameterType="String" resultType="mo.UserMo">
+		select cust_id,cust_name,cust_phone,cust_password
+		from customert
+		where cust_phone=#{cust_phone}
+	</select>
+
+	<select id="getShoppingNumber" parameterType="int" resultType="mo.ShoppingNumberMo"><!-- java.math.BigDecimal --> 
+		select cust_id,shoppingnumber
+		from shopcarnumber_view
+		where cust_id=#{cust_id}
+	</select>
+	
+	<insert id="addUser" parameterType="mo.UserMo">
+	   insert into customert(cust_name,cust_phone,cust_password)
+	   VALUES(#{cust_name},#{cust_phone},#{cust_password})
+	</insert>
+
+</mapper>

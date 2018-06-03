@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="mapper.ShopCarMapper">
+
+	<select id="findShopCar" parameterType="mo.ShoppingCarMo"
+		resultType="mo.ShoppingCarMo">
+		select shop_id,comm_id,cust_id,comm_number,comm_price
+		from shoppingcarT
+		where
+		comm_id=#{comm_id} and cust_id=#{cust_id}
+	</select>
+
+	<insert id="addShopCar" parameterType="mo.ShoppingCarMo">
+		INSERT into
+		shoppingcart(comm_id,comm_price,cust_id,comm_number,join_time)
+		VALUES(#{comm_id},#{comm_price},#{cust_id},#{comm_number},#{join_time})
+	</insert>
+
+	<update id="updateShopCar" parameterType="mo.ShoppingCarMo">
+		update shoppingcart
+		set
+		comm_number=#{comm_number}
+		where comm_id=#{comm_id} and cust_id=#{cust_id}
+	</update>
+
+	<select id="getJoinShopCommodity" parameterType="mo.ShopCar_ViewMo"
+		resultType="mo.ShopCar_ViewMo">
+		select comm_name_plus,image1,comm_id
+		from Shopcar_View
+		where comm_id=#{comm_id} and cust_id=#{cust_id}
+	</select>
+
+	<select id="getMyShoppingCar" parameterType="int" resultType="mo.ShopCar_ViewMo">
+		select image1,comm_name_plus,comm_price,comm_number,totalPrice,comm_id
+		from Shopcar_View
+		where cust_id=#{cust_id}
+		order by join_time desc
+	</select>
+	
+	<delete id="deleteShoppingCar" parameterType="mo.ShoppingCarMo">
+	   delete from shoppingcart
+	   where comm_id=#{comm_id} and cust_id=#{cust_id}
+	</delete>
+  
+
+</mapper>
